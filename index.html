@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3-0-lympics Dashboard</title>
+  <style>
+    :root {
+      --bg1: #07131c;
+      --bg2: #0d2230;
+      --panel: rgba(255,255,255,0.06);
+      --panel-border: rgba(255,255,255,0.10);
+      --text: #f8fafc;
+      --muted: #d5dee7;
+      --teal: #14b8a6;
+      --teal-soft: rgba(20,184,166,0.16);
+      --teal-outline: rgba(20,184,166,0.45);
+      --shadow: 0 12px 28px rgba(0,0,0,0.28);
+      --radius: 22px;
+      --gap: 16px;
+
+      --tim-bg: rgba(34,197,94,0.24);
+      --kevin-bg: rgba(250,204,21,0.24);
+      --shivani-bg: rgba(168,85,247,0.24);
+      --chris-bg: rgba(59,130,246,0.24);
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(20,184,166,0.12), transparent 24%),
+        linear-gradient(160deg, var(--bg1), var(--bg2));
+    }
+    body { padding: 14px; }
+
+    .dashboard {
+      width: 100%;
+      height: calc(100vh - 28px);
+      display: grid;
+      grid-template-columns: minmax(0, 1.62fr) minmax(360px, 1.08fr);
+      gap: var(--gap);
+    }
+
+    .panel {
+      min-width: 0;
+      min-height: 0;
+      border-radius: var(--radius);
+      border: 1px solid var(--panel-border);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-inner {
+      padding: 10px 12px 12px;
+      min-height: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dashboard-title {
+      font-size: 1.55rem;
+      font-weight: 900;
+      text-align: center;
+      letter-spacing: 0.05em;
+      line-height: 1.05;
+      margin: 0 0 6px;
+    }
+
+    .panel-title {
+      margin: 0 0 10px;
+      color: var(--teal);
+      font-size: 0.98rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .legend-note {
+      color: var(--muted);
+      font-size: 0.74rem;
+      line-height: 1.2;
+      opacity: 0.8;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .table-wrap { min-height: 0; flex: 1; display: flex; flex-direction: column; }
+
+    table {
+      width: 100%;
+      height: 100%;
+      border-collapse: separate;
+      border-spacing: 0 4px;
+      table-layout: fixed;
+    }
+
+    th {
+      font-size: 0.84rem;
+      font-weight: 900;
+      text-align: center;
+      padding: 5px 6px;
+      opacity: 0.88;
+      line-height: 1;
+      border-bottom: 1px solid rgba(255,255,255,0.16);
+    }
+
+    tbody tr {
+      background: rgba(255,255,255,0.04);
+      transition: background 150ms ease, box-shadow 150ms ease;
+    }
+    tbody tr.current-row {
+      box-shadow: inset 0 0 0 2px var(--teal-outline);
+      background: rgba(20,184,166,0.10);
+    }
+
+    td {
+      padding: 3px 8px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      line-height: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: middle;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    td:first-child {
+      border-left: 1px solid rgba(255,255,255,0.06);
+      border-top-left-radius: 12px;
+      border-bottom-left-radius: 12px;
+    }
+    td:last-child {
+      border-right: 1px solid rgba(255,255,255,0.06);
+      border-top-right-radius: 12px;
+      border-bottom-right-radius: 12px;
+    }
+
+    .time-col {
+      width: 108px;
+      color: #99f6e4;
+      font-weight: 900;
+      text-align: center;
+      background: var(--teal-soft);
+    }
+
+    .event-col { width: 25%; padding-left: 10px; }
+    .event-col.revealed { color: var(--text); font-weight: 900; }
+    .event-col.hidden {
+      color: #7dd3c7;
+      font-weight: 800;
+      font-style: italic;
+      opacity: 0.92;
+    }
+
+    .team-tim { background: var(--tim-bg); }
+    .team-kevin { background: var(--kevin-bg); }
+    .team-shivani { background: var(--shivani-bg); }
+    .team-chris { background: var(--chris-bg); }
+
+    .team-result {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      color: var(--text);
+    }
+
+    .team-score { font-size: 0.98rem; font-weight: 900; }
+    .team-medal { font-size: 1rem; line-height: 1; }
+
+    .current-wrap {
+      min-height: 0;
+      flex: 1;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) 170px;
+      gap: 14px;
+    }
+
+    .games-grid {
+      min-height: 0;
+      display: grid;
+      gap: 12px;
+      grid-template-rows: 1fr 1fr;
+    }
+    .games-grid.one-card { grid-template-rows: 1fr; }
+
+    .game-card {
+      min-height: 0;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 18px;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 12px;
+    }
+    .game-card.hidden { display: none; }
+
+    .game-title {
+      font-size: 1.8rem;
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--text);
+    }
+
+    .game-location {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--teal-soft);
+      border: 1px solid rgba(20,184,166,0.28);
+      color: #99f6e4;
+      font-size: 0.96rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .rules-card {
+      min-height: 0;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .rules-title {
+      font-size: 0.92rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 8px;
+      line-height: 1;
+    }
+
+    .rules-body {
+      white-space: pre-wrap;
+      color: var(--muted);
+      font-size: 0.98rem;
+      line-height: 1.35;
+      overflow: hidden;
+    }
+
+    .bottom-strip {
+      min-height: 0;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .message-box {
+      min-width: 0;
+      height: 100%;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .photo-square {
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      border-radius: 14px;
+      object-fit: contain;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.05);
+      display: block;
+    }
+
+    .status-note {
+      margin-top: 8px;
+      text-align: center;
+      font-size: 0.76rem;
+      color: var(--muted);
+      opacity: 0.84;
+    }
+    .error-note { color: #fecaca; }
+
+    @media (max-width: 1500px) {
+      .dashboard { grid-template-columns: minmax(0, 1.58fr) minmax(320px, 1.12fr); }
+      td { font-size: 0.80rem; padding: 2px 6px; }
+      .event-col { font-size: 0.82rem; }
+      .time-col { width: 96px; }
+      .team-score, .team-medal { font-size: 0.90rem; }
+      .game-title { font-size: 1.5rem; }
+      .rules-body { font-size: 0.88rem; }
+    }
+
+    @media (max-width: 1200px) {
+      html, body { overflow: auto; }
+      .dashboard { height: auto; grid-template-columns: 1fr; }
+      table { height: auto; }
+      tbody tr { height: 38px; }
+      .current-wrap { grid-template-rows: auto auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <section class="panel main-panel">
+      <div class="panel-inner">
+        <div class="dashboard-title">🏆 3-0-lympics Dashboard 🏆</div>
+        <h2 class="panel-title">Schedule + Scores</h2>
+        <div class="legend-note">Unrevealed events use CensorText in teal. Revealed events switch to bright white.</div>
+        <div class="table-wrap">
+          <table aria-label="Schedule and team scores">
+            <thead>
+              <tr class="header-row">
+                <th class="time-col">Time</th>
+                <th class="event-col">Event</th>
+                <th class="team-tim">Tim</th>
+                <th class="team-kevin">Kevin</th>
+                <th class="team-shivani">Shivani</th>
+                <th class="team-chris">Chris</th>
+              </tr>
+            </thead>
+            <tbody id="sched-body"></tbody>
+          </table>
+        </div>
+        <div class="status-note" id="sched-status">Loading schedule…</div>
+      </div>
+    </section>
+
+    <section class="panel current-panel">
+      <div class="panel-inner">
+        <h2 class="panel-title">Current Game</h2>
+        <div class="current-wrap">
+          <div class="games-grid one-card" id="games-grid">
+            <article class="game-card" id="game-card-1">
+              <div class="game-title" id="game-title-1">Loading…</div>
+              <div class="game-location" id="game-location-1">📍 —</div>
+              <div class="rules-card">
+                <div class="rules-title">Game Rules</div>
+                <div class="rules-body" id="game-rules-1"></div>
+              </div>
+            </article>
+
+            <article class="game-card hidden" id="game-card-2">
+              <div class="game-title" id="game-title-2"></div>
+              <div class="game-location" id="game-location-2"></div>
+              <div class="rules-card">
+                <div class="rules-title">Game Rules</div>
+                <div class="rules-body" id="game-rules-2"></div>
+              </div>
+            </article>
+          </div>
+
+          <div class="bottom-strip">
+            <div class="message-box" id="sponsor-message">Loading sponsor message…</div>
+            <img class="photo-square" id="sponsor-logo" alt="Sponsor logo" />
+            <img class="photo-square" id="sponsor-qr" alt="Sponsor QR" />
+          </div>
+        </div>
+        <div class="status-note error-note" id="current-status" style="display:none;"></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const SHEET_ID = "1XRQaYtpF73oGmPD8fKEt81taq0dXysXRZt66Yma2Lzs";
+    const REFRESH_MS = 30000;
+
+    const TAB_CANDIDATES = {
+      sched: ["SchedScore", "SchedScores"],
+      current: ["CurrentGame"],
+      config: ["Config"]
+    };
+
+    function normalize(value) {
+      return String(value ?? "").trim();
+    }
+
+    function parseBool(value) {
+      const v = normalize(value).toLowerCase();
+      return v === "true" || v === "yes" || v === "1";
+    }
+
+    function safeHtml(text) {
+      return String(text ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function placeToEmoji(place) {
+      const p = normalize(place).toLowerCase();
+      if (["1", "1st", "gold", "🥇"].includes(p)) return "🥇";
+      if (["2", "2nd", "silver", "🥈"].includes(p)) return "🥈";
+      if (["3", "3rd", "bronze", "🥉"].includes(p)) return "🥉";
+      if (["4", "4th", "goofy", "funny", "🤪"].includes(p)) return "🤪";
+      return p || "—";
+    }
+
+    function parseGvizResponse(text) {
+      const start = text.indexOf("{");
+      const end = text.lastIndexOf("}");
+      if (start === -1 || end === -1) throw new Error("Could not parse Google response");
+      return JSON.parse(text.slice(start, end + 1));
+    }
+
+    function gvizTableToObjects(payload) {
+      const cols = payload.table.cols.map(c => normalize(c.label || c.id));
+      return payload.table.rows.map(r => {
+        const obj = {};
+        cols.forEach((col, idx) => {
+          const cell = r.c[idx];
+          obj[col] = cell ? (cell.f ?? cell.v ?? "") : "";
+        });
+        return obj;
+      });
+    }
+
+    function loadSheetViaScript(sheetName) {
+      return new Promise((resolve, reject) => {
+        const callbackName = `sheetCb_${sheetName.replace(/\W/g, "_")}_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+        const script = document.createElement("script");
+        const timeout = setTimeout(() => {
+          cleanup();
+          reject(new Error(`Timed out loading ${sheetName}`));
+        }, 15000);
+
+        function cleanup() {
+          clearTimeout(timeout);
+          try { delete window[callbackName]; } catch (_) {}
+          if (script.parentNode) script.parentNode.removeChild(script);
+        }
+
+        window[callbackName] = function(payload) {
+          try {
+            cleanup();
+            resolve(gvizTableToObjects(payload));
+          } catch (err) {
+            reject(err);
+          }
+        };
+
+        script.onerror = function() {
+          cleanup();
+          reject(new Error(`Failed to load ${sheetName}`));
+        };
+
+        script.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${encodeURIComponent(sheetName)}&tqx=${encodeURIComponent("responseHandler:" + callbackName + ";out:json")}`;
+        document.head.appendChild(script);
+      });
+    }
+
+    async function fetchFirstAvailable(candidateNames) {
+      let lastError = null;
+      for (const name of candidateNames) {
+        try {
+          const rows = await loadSheetViaScript(name);
+          return { sheetName: name, rows };
+        } catch (err) {
+          lastError = err;
+        }
+      }
+      throw lastError || new Error("No sheet available");
+    }
+
+    function teamCell(score, place, className) {
+      return `
+        <td class="${className}">
+          <div class="team-result">
+            <span class="team-score">${safeHtml(normalize(score) || "0")}</span>
+            <span class="team-medal">${safeHtml(placeToEmoji(place))}</span>
+          </div>
+        </td>
+      `;
+    }
+
+    function renderSchedule(rows) {
+      const body = document.getElementById("sched-body");
+      const status = document.getElementById("sched-status");
+
+      const cleaned = rows
+        .filter(r => normalize(r["Time"]) || normalize(r["Event"]) || normalize(r["RevealText"]) || normalize(r["CensorText"]))
+        .map(r => ({
+          time: normalize(r["Time"]),
+          visible: parseBool(r["Visible"]),
+          censorText: normalize(r["CensorText"]) || normalize(r["Event"]),
+          revealText: normalize(r["RevealText"]) || normalize(r["Event"]),
+          timScore: normalize(r["Tim Score"]) || "0",
+          timPlace: normalize(r["Tim Place"]) || "4",
+          kevinScore: normalize(r["Kevin Score"]) || "0",
+          kevinPlace: normalize(r["Kevin Place"]) || "4",
+          shivaniScore: normalize(r["Shivani Score"]) || "0",
+          shivaniPlace: normalize(r["Shivani Place"]) || "4",
+          chrisScore: normalize(r["Chris Score"]) || "0",
+          chrisPlace: normalize(r["Chris Place"]) || "4"
+        }));
+
+      const currentIndex = cleaned.findIndex(r => !r.visible);
+
+      body.innerHTML = cleaned.map((r, idx) => {
+        const shownEvent = r.visible ? r.revealText : r.censorText;
+        const eventClass = r.visible ? "event-col revealed" : "event-col hidden";
+        const rowClass = idx === currentIndex ? "current-row" : "";
+        return `
+          <tr class="${rowClass}">
+            <td class="time-col">${safeHtml(r.time)}</td>
+            <td class="${eventClass}">${safeHtml(shownEvent)}</td>
+            ${teamCell(r.timScore, r.timPlace, "team-tim")}
+            ${teamCell(r.kevinScore, r.kevinPlace, "team-kevin")}
+            ${teamCell(r.shivaniScore, r.shivaniPlace, "team-shivani")}
+            ${teamCell(r.chrisScore, r.chrisPlace, "team-chris")}
+          </tr>
+        `;
+      }).join("");
+
+      status.textContent = `Loaded ${cleaned.length} schedule row${cleaned.length === 1 ? "" : "s"}. Refreshes every ${REFRESH_MS / 1000}s.`;
+    }
+
+    function renderCurrentGames(rows) {
+      const usable = rows
+        .filter(r => normalize(r["Event"]))
+        .slice(0, 2);
+
+      const normalized = usable
+        .map(r => ({
+          event: normalize(r["Event"]),
+          location: normalize(r["Location"]),
+          rules: normalize(r["Rules"])
+        }))
+        .filter(r => r.event && r.event.toLowerCase() !== "blank");
+
+      const grid = document.getElementById("games-grid");
+      grid.classList.toggle("one-card", normalized.length <= 1);
+
+      for (let i = 1; i <= 2; i++) {
+        const card = document.getElementById(`game-card-${i}`);
+        const data = normalized[i - 1];
+        if (!data) {
+          card.classList.add("hidden");
+          continue;
+        }
+        card.classList.remove("hidden");
+        document.getElementById(`game-title-${i}`).textContent = data.event;
+        const locEl = document.getElementById(`game-location-${i}`);
+        if (data.location) {
+          locEl.textContent = `📍 ${data.location}`;
+          locEl.style.display = "inline-flex";
+        } else {
+          locEl.textContent = "";
+          locEl.style.display = "none";
+        }
+        document.getElementById(`game-rules-${i}`).textContent = data.rules || "";
+      }
+
+      if (normalized.length === 0) {
+        const card = document.getElementById("game-card-1");
+        card.classList.remove("hidden");
+        document.getElementById("game-title-1").textContent = "";
+        document.getElementById("game-location-1").style.display = "none";
+        document.getElementById("game-rules-1").textContent = "";
+      }
+    }
+
+    function renderConfig(rows) {
+      const map = {};
+      rows.forEach(r => {
+        const field = normalize(r["Field"]);
+        if (field) map[field] = normalize(r["Value"]);
+      });
+
+      document.getElementById("sponsor-message").textContent = map["SponsorMessage"] || "";
+
+      const logo = document.getElementById("sponsor-logo");
+      if (map["SponsorLogo"]) {
+        logo.src = map["SponsorLogo"];
+        logo.style.display = "block";
+      } else {
+        logo.removeAttribute("src");
+        logo.style.display = "none";
+      }
+
+      const qr = document.getElementById("sponsor-qr");
+      if (map["SponsorQR"]) {
+        qr.src = map["SponsorQR"];
+        qr.style.display = "block";
+      } else {
+        qr.removeAttribute("src");
+        qr.style.display = "none";
+      }
+    }
+
+    async function loadAll() {
+      const schedStatus = document.getElementById("sched-status");
+      const currentStatus = document.getElementById("current-status");
+      currentStatus.style.display = "none";
+      currentStatus.textContent = "";
+
+      try {
+        const [sched, current, config] = await Promise.all([
+          fetchFirstAvailable(TAB_CANDIDATES.sched),
+          fetchFirstAvailable(TAB_CANDIDATES.current),
+          fetchFirstAvailable(TAB_CANDIDATES.config)
+        ]);
+
+        renderSchedule(sched.rows);
+        renderCurrentGames(current.rows);
+        renderConfig(config.rows);
+      } catch (err) {
+        console.error(err);
+        schedStatus.textContent = "Could not load sheet data. Check that the workbook is published.";
+        currentStatus.textContent = "Data load failed. This version uses Google’s script feed so it should work from a local HTML file.";
+        currentStatus.style.display = "block";
+      }
+    }
+
+    loadAll();
+    setInterval(loadAll, REFRESH_MS);
+  </script>
+</body>
+</html>
