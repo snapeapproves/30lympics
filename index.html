@@ -319,12 +319,16 @@
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(255,255,255,0.08);
     padding: 8px 12px;
+
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: var(--muted);
-    font-size: 0.84rem;
+
+    color: var(--text);        /* changed */
+    font-size: 0.88rem;        /* match table text */
+    font-weight: 900;          /* match revealed events */
+    line-height: 1.25;
   }
 
   .photo-square {
