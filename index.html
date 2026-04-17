@@ -244,11 +244,20 @@
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.08);
     padding: 18px;
+    
     display: grid;
-    grid-template-rows: auto auto auto;
+    grid-template-rows: 100px 1fr; /* KEY CHANGE */
     gap: 12px;
   }
-
+  
+  .game-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    height: 100%;
+  }
+  
   .game-card.hidden { display: none; }
 
   .game-title {
@@ -269,10 +278,16 @@
   }
 
   .rules-card {
+    min-height: 0;
+    height: 100%;
     border-radius: 16px;
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(255,255,255,0.08);
     padding: 14px;
+    
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
 
   .rules-title {
@@ -288,7 +303,10 @@
     color: var(--muted);
     font-size: 0.98rem;
     line-height: 1.35;
-  }
+
+    overflow-y: auto; /* KEY: scroll if too long */
+    flex: 1;          /* KEY: fill space */
+    }
 
   .bottom-strip {
     border-radius: 18px;
