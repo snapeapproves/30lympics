@@ -239,15 +239,9 @@
   }
 
   .game-card {
-    min-height: 0;
-    border-radius: 18px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-    padding: 18px;
-
     display: grid;
-    grid-template-rows: auto auto 1fr; /* title, location, rules */
-    gap: 8px;
+    grid-template-rows: 90px 1fr; /* fixed header */
+    gap: 10px;
   }
   
   .game-header {
@@ -260,21 +254,13 @@
   
   .game-card.hidden { display: none; }
 
-  .game-title {
-    font-size: 1.8rem;
-    font-weight: 900;
+ .game-title {
+    grid-row: 1;
   }
 
   .game-location {
-    display: inline-flex;
-    align-items: center;
-    padding: 8px 12px;
-    border-radius: 999px;
-    background: var(--teal-soft);
-    border: 1px solid rgba(20,184,166,0.28);
-    color: #99f6e4;
-    font-size: 0.96rem;
-    font-weight: 800;
+    grid-row: 1;
+    align-self: end;
   }
 
   .rules-card {
