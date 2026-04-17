@@ -109,7 +109,7 @@
       height: 100%;
       border-collapse: separate;
       border-spacing: 0 4px;
-      table-layout: fixed;
+      table-layout: auto;
     }
 
     th {
@@ -158,9 +158,8 @@
     }
 
     .time-col {
-      width: 30px;
-      min-width: 30px;
-      max-width: 30px;
+      width: 1%;
+      white-space: nowrap;
       color: #99f6e4;
       font-weight: 900;
       text-align: center;
@@ -188,9 +187,8 @@
     .team-kevin,
     .team-shivani,
     .team-chris {
-      width: 30px;
-      min-width: 30px;
-      max-width: 30px;
+      width: 1%;
+      white-space: nowrap;
     }
 
     .team-tim { background: var(--tim-bg); }
@@ -205,6 +203,7 @@
       gap: 6px;
       width: 100%;
       color: var(--text);
+      white-space: nowrap;
     }
 
     .team-score {
@@ -215,6 +214,7 @@
     .team-medal {
       font-size: 1rem;
       line-height: 1;
+      flex: 0 0 auto;
     }
 
     .current-wrap {
@@ -364,11 +364,6 @@
 
       td { font-size: 0.80rem; padding: 2px 6px; }
       .event-col { font-size: 0.82rem; }
-      .time-col {
-        width: 50px;
-        min-width: 50px;
-        max-width: 50px;
-      }
       .team-score, .team-medal { font-size: 0.90rem; }
       .game-title { font-size: 1.5rem; }
       .rules-body { font-size: 0.88rem; }
@@ -393,7 +388,7 @@
       tbody tr { height: 38px; }
       .current-wrap { grid-template-rows: auto auto; }
     }
-  </style>
+</style>
 </head>
 <body>
   <div class="dashboard">
