@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>3-0-lympics Dashboard</title>
-<style>
+  <style>
     :root {
       --bg1: #07131c;
       --bg2: #0d2230;
@@ -109,7 +109,7 @@
       height: 100%;
       border-collapse: separate;
       border-spacing: 0 4px;
-      table-layout: auto;
+      table-layout: fixed;
     }
 
     th {
@@ -158,8 +158,7 @@
     }
 
     .time-col {
-      width: 1%;
-      white-space: nowrap;
+      width: 108px;
       color: #99f6e4;
       font-weight: 900;
       text-align: center;
@@ -167,7 +166,7 @@
     }
 
     .event-col {
-      width: auto;
+      width: 25%;
       padding-left: 10px;
     }
 
@@ -183,14 +182,6 @@
       opacity: 0.92;
     }
 
-    .team-tim,
-    .team-kevin,
-    .team-shivani,
-    .team-chris {
-      width: 1%;
-      white-space: nowrap;
-    }
-
     .team-tim { background: var(--tim-bg); }
     .team-kevin { background: var(--kevin-bg); }
     .team-shivani { background: var(--shivani-bg); }
@@ -203,7 +194,6 @@
       gap: 6px;
       width: 100%;
       color: var(--text);
-      white-space: nowrap;
     }
 
     .team-score {
@@ -214,7 +204,6 @@
     .team-medal {
       font-size: 1rem;
       line-height: 1;
-      flex: 0 0 auto;
     }
 
     .current-wrap {
@@ -364,6 +353,7 @@
 
       td { font-size: 0.80rem; padding: 2px 6px; }
       .event-col { font-size: 0.82rem; }
+      .time-col { width: 96px; }
       .team-score, .team-medal { font-size: 0.90rem; }
       .game-title { font-size: 1.5rem; }
       .rules-body { font-size: 0.88rem; }
@@ -388,7 +378,7 @@
       tbody tr { height: 38px; }
       .current-wrap { grid-template-rows: auto auto; }
     }
-</style>
+  </style>
 </head>
 <body>
   <div class="dashboard">
@@ -396,6 +386,7 @@
       <div class="panel-inner">
         <div class="dashboard-title">🏆 3-0-lympics Dashboard 🏆</div>
         <h2 class="panel-title">Schedule + Scores</h2>
+        <div class="legend-note">Unrevealed events use CensorText in teal. Revealed events switch to bright white.</div>
         <div class="table-wrap">
           <table aria-label="Schedule and team scores">
             <thead>
@@ -887,7 +878,7 @@
     }
 
     .time-col {
-      width: 50px;
+      width: 108px;
       color: #99f6e4;
       font-weight: 900;
       text-align: center;
