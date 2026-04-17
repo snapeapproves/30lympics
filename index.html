@@ -172,9 +172,9 @@
   .team-kevin,
   .team-shivani,
   .team-chris {
-    width: 108px;
-    min-width: 108px;
-    max-width: 108px;
+    width: 132px;
+    min-width: 132px;
+    max-width: 132px;
   }
 
   .team-tim { background: var(--tim-bg); }
@@ -516,7 +516,9 @@
           chrisPlace: normalize(r["Chris Place"]) || "4"
         }));
 
-      const currentIndex = cleaned.findIndex(r => !r.visible);
+     const currentIndex = cleaned.reduce((lastTrueIndex, row, index) => {
+        return row.visible ? index : lastTrueIndex;
+        }, -1);
 
       body.innerHTML = cleaned.map((r, idx) => {
         const shownEvent = r.visible ? r.revealText : r.censorText;
