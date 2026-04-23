@@ -339,53 +339,6 @@
     border: 1px solid rgba(255,255,255,0.08);
     background: rgba(255,255,255,0.05);
   }
-
-  .score-chart {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 12px;
-  height: 100%;
-  min-height: 180px;
-  padding-top: 8px;
-}
-
-.score-chart.hidden {
-  display: none;
-}
-
-.score-bar-wrap {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: end;
-  gap: 8px;
-  min-width: 0;
-}
-
-.score-value {
-  font-size: 1rem;
-  font-weight: 900;
-  color: var(--text);
-  line-height: 1;
-}
-
-.score-bar {
-  width: 100%;
-  max-width: 72px;
-  min-height: 8px;
-  border-radius: 12px 12px 0 0;
-  border: 1px solid rgba(255,255,255,0.14);
-}
-
-.score-label {
-  font-size: 0.88rem;
-  font-weight: 900;
-  line-height: 1.1;
-  text-align: center;
-  color: var(--muted);
-}
 </style>
 </head>
 <body>
@@ -422,11 +375,10 @@
             <article class="game-card" id="game-card-1">
               <div class="game-title" id="game-title-1">Loading…</div>
               <div class="game-location" id="game-location-1">📍 —</div>
-<div class="rules-card" id="game-panel-1">
-  <div class="rules-title" id="game-panel-title-1">Game Rules</div>
-  <div class="rules-body" id="game-rules-1"></div>
-  <div class="score-chart hidden" id="score-chart-1"></div>
-</div>
+              <div class="rules-card">
+                <div class="rules-title">Game Rules</div>
+                <div class="rules-body" id="game-rules-1"></div>
+              </div>
             </article>
 
             <article class="game-card hidden" id="game-card-2">
@@ -451,7 +403,7 @@
   </div>
 
   <script>
-    const REFRESH_MS = 10000;
+    const REFRESH_MS = 30000;
 
     const CSV_URLS = {
       sched: "https://docs.google.com/spreadsheets/d/1XRQaYtpF73oGmPD8fKEt81taq0dXysXRZt66Yma2Lzs/export?format=csv&gid=756658667",
@@ -615,56 +567,6 @@
       return Math.max(1, Math.min(raw, 3.2));
     }
 
-    function getFinalTeamScores() {
-  const rows = Array.from(document.querySelectorAll("#sched-body tr"));
-  if (!rows.length) return null;
-
-  const lastRow = rows[rows.length - 1];
-  const cells = lastRow.querySelectorAll("td");
-  if (cells.length < 6) return null;
-
-  return [
-    {
-      name: "Tim",
-      score: Number(cells[2].querySelector(".team-score")?.textContent || 0),
-      color: "var(--tim-bg)"
-    },
-    {
-      name: "Kevin",
-      score: Number(cells[3].querySelector(".team-score")?.textContent || 0),
-      color: "var(--kevin-bg)"
-    },
-    {
-      name: "Shivani",
-      score: Number(cells[4].querySelector(".team-score")?.textContent || 0),
-      color: "var(--shivani-bg)"
-    },
-    {
-      name: "Chris",
-      score: Number(cells[5].querySelector(".team-score")?.textContent || 0),
-      color: "var(--chris-bg)"
-    }
-  ];
-}
-
-function renderFinalScoreChart(containerId, scores) {
-  const container = document.getElementById(containerId);
-  if (!container || !scores?.length) return;
-
-  const maxScore = Math.max(...scores.map(s => s.score), 1);
-
-  container.innerHTML = scores.map(team => {
-    const height = Math.max(10, (team.score / maxScore) * 140);
-    return `
-      <div class="score-bar-wrap">
-        <div class="score-value">${team.score}</div>
-        <div class="score-bar" style="height:${height}px; background:${team.color};"></div>
-        <div class="score-label">${team.name}</div>
-      </div>
-    `;
-  }).join("");
-}
-
     function renderCurrentGames(rows) {
       const usable = rows
         .filter(r => normalize(r["Event"]))
@@ -706,62 +608,18 @@ function renderFinalScoreChart(containerId, scores) {
           locEl.textContent = "";
           locEl.style.display = "none";
         }
-const rulesEl = document.getElementById(`game-rules-${i}`);
-const chartEl = document.getElementById(`score-chart-${i}`);
-const panelTitleEl = document.getElementById(`game-panel-title-${i}`);
+        document.getElementById(`game-rules-${i}`).textContent = data.rules || "";
+      }
 
-if (data.event.toLowerCase() === "closing ceremony" && i === 1) {
-  // Switch to final scores mode
-  if (panelTitleEl) panelTitleEl.textContent = "Final Scores";
-
-  if (rulesEl) {
-    rulesEl.textContent = "";
-    rulesEl.style.display = "none";
-  }
-
-  if (chartEl) {
-    chartEl.classList.remove("hidden");
-    const finalScores = getFinalTeamScores();
-    renderFinalScoreChart(`score-chart-${i}`, finalScores);
-  }
-
-} else {
-  // Normal rules mode
-  if (panelTitleEl) panelTitleEl.textContent = "Game Rules";
-
-  if (rulesEl) {
-    rulesEl.textContent = data.rules || "";
-    rulesEl.style.display = "block";
-  }
-
-  if (chartEl) {
-    chartEl.classList.add("hidden");
-    chartEl.innerHTML = "";
-  }
-}
-
-if (normalized.length === 0) {
-  const card = document.getElementById("game-card-1");
-  card.classList.remove("hidden");
-  document.getElementById("game-title-1").textContent = "";
-  document.getElementById("game-location-1").style.display = "none";
-
-  const rulesEl = document.getElementById("game-rules-1");
-  const chartEl = document.getElementById("score-chart-1");
-  const panelTitleEl = document.getElementById("game-panel-title-1");
-
-  if (panelTitleEl) panelTitleEl.textContent = "Game Rules";
-  if (rulesEl) {
-    rulesEl.textContent = "";
-    rulesEl.style.display = "block";
-  }
-  if (chartEl) {
-    chartEl.classList.add("hidden");
-    chartEl.innerHTML = "";
-  }
-
-  grid.style.setProperty("--game-rows", "1fr");
-}
+      if (normalized.length === 0) {
+        const card = document.getElementById("game-card-1");
+        card.classList.remove("hidden");
+        document.getElementById("game-title-1").textContent = "";
+        document.getElementById("game-location-1").style.display = "none";
+        document.getElementById("game-rules-1").textContent = "";
+        grid.style.setProperty("--game-rows", "1fr");
+      }
+    }
 
     function renderConfig(rows) {
       const map = {};
