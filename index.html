@@ -1,217 +1,714 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>3-0-lympics Dashboard</title>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3-0-lympics Dashboard</title>
 <style>
-:root {
-  --bg1: #07131c;
-  --bg2: #0d2230;
-  --panel: rgba(255,255,255,0.06);
-  --panel-border: rgba(255,255,255,0.10);
-  --text: #f8fafc;
-  --muted: #d5dee7;
-  --teal: #14b8a6;
-  --teal-soft: rgba(20,184,166,0.16);
-  --teal-outline: rgba(20,184,166,0.45);
-  --shadow: 0 12px 28px rgba(0,0,0,0.28);
-  --radius: 22px;
-  --gap: 16px;
+  :root {
+    --bg1: #07131c;
+    --bg2: #0d2230;
+    --panel: rgba(255,255,255,0.06);
+    --panel-border: rgba(255,255,255,0.10);
+    --text: #f8fafc;
+    --muted: #d5dee7;
+    --teal: #14b8a6;
+    --teal-soft: rgba(20,184,166,0.16);
+    --teal-outline: rgba(20,184,166,0.45);
+    --shadow: 0 12px 28px rgba(0,0,0,0.28);
+    --radius: 22px;
+    --gap: 16px;
 
-  --tim-bg: rgba(34,197,94,0.24);
-  --kevin-bg: rgba(250,204,21,0.24);
-  --shivani-bg: rgba(168,85,247,0.24);
-  --chris-bg: rgba(59,130,246,0.24);
-}
+    --tim-bg: rgba(34,197,94,0.24);
+    --kevin-bg: rgba(250,204,21,0.24);
+    --shivani-bg: rgba(168,85,247,0.24);
+    --chris-bg: rgba(59,130,246,0.24);
+  }
 
-* { box-sizing: border-box; }
+  * { box-sizing: border-box; }
 
-html, body {
-  margin: 0;
-  height: 100%;
-  overflow: hidden;
-  font-family: Arial, Helvetica, sans-serif;
-  color: var(--text);
-  background:
-    radial-gradient(circle at top left, rgba(20,184,166,0.12), transparent 24%),
-    linear-gradient(160deg, var(--bg1), var(--bg2));
-}
+  html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(circle at top left, rgba(20,184,166,0.12), transparent 24%),
+      linear-gradient(160deg, var(--bg1), var(--bg2));
+  }
 
-body { padding: 14px; }
+  body { padding: 14px; }
 
-.dashboard {
-  height: calc(100vh - 28px);
-  display: grid;
-  grid-template-rows: auto 1fr;
-  gap: var(--gap);
-}
+  .dashboard {
+    width: 100%;
+    height: calc(100vh - 28px);
+    display: grid;
+    grid-template-columns: minmax(0, 1.62fr) minmax(360px, 1.08fr);
+    gap: var(--gap);
+  }
 
-.title-bar {
-  text-align: center;
-  font-size: 1.6rem;
-  font-weight: 900;
-}
+  .panel {
+    min-width: 0;
+    min-height: 0;
+    border-radius: var(--radius);
+    border: 1px solid var(--panel-border);
+    background: var(--panel);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
 
-/* NORMAL DASHBOARD */
-.dashboard-content {
-  display: grid;
-  grid-template-columns: minmax(0, 1.62fr) minmax(360px, 1.08fr);
-  gap: var(--gap);
-}
+  .panel-inner {
+    padding: 10px 12px 12px;
+    min-height: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
 
-.panel {
-  border-radius: var(--radius);
-  border: 1px solid var(--panel-border);
-  background: var(--panel);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
+  .dashboard-title {
+    font-size: 1.55rem;
+    font-weight: 900;
+    text-align: center;
+    letter-spacing: 0.05em;
+    line-height: 1.05;
+    margin: 0 0 6px;
+  }
 
-.panel-inner {
-  padding: 10px 12px;
+  .panel-title {
+    margin: 0 0 10px;
+    color: var(--teal);
+    font-size: 0.98rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .legend-note {
+    color: var(--muted);
+    font-size: 0.74rem;
+    line-height: 1.2;
+    opacity: 0.8;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .table-wrap {
+    min-height: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  table {
+    width: 100%;
+    height: 100%;
+    border-collapse: separate;
+    border-spacing: 0 4px;
+    table-layout: fixed;
+  }
+
+  th {
+    font-size: 0.84rem;
+    font-weight: 900;
+    text-align: center;
+    padding: 5px 6px;
+    opacity: 0.88;
+    line-height: 1;
+    border-bottom: 1px solid rgba(255,255,255,0.16);
+  }
+
+  tbody tr {
+    background: rgba(255,255,255,0.04);
+    transition: background 150ms ease, box-shadow 150ms ease;
+  }
+
+  tbody tr.current-row {
+    box-shadow: inset 0 0 0 2px var(--teal-outline);
+    background: rgba(20,184,166,0.10);
+  }
+
+  td {
+    padding: 3px 8px;
+    font-size: 0.88rem;
+    font-weight: 800;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  td:first-child {
+    border-left: 1px solid rgba(255,255,255,0.06);
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+  }
+
+  td:last-child {
+    border-right: 1px solid rgba(255,255,255,0.06);
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
+
+  /* FIXED WIDTH COLUMNS */
+  .time-col {
+    width: 108px;
+    min-width: 108px;
+    max-width: 108px;
+    color: #99f6e4;
+    font-weight: 900;
+    text-align: center;
+    background: var(--teal-soft);
+  }
+
+  .team-tim,
+  .team-kevin,
+  .team-shivani,
+  .team-chris {
+    width: 132px;
+    min-width: 132px;
+    max-width: 132px;
+  }
+
+  .team-tim { background: var(--tim-bg); }
+  .team-kevin { background: var(--kevin-bg); }
+  .team-shivani { background: var(--shivani-bg); }
+  .team-chris { background: var(--chris-bg); }
+
+  /* FLEXIBLE COLUMN */
+  .event-col {
+    width: auto;
+    padding-left: 10px;
+  }
+
+  .event-col.revealed {
+    color: var(--text);
+    font-weight: 900;
+  }
+
+  .event-col.hidden {
+    color: #7dd3c7;
+    font-weight: 800;
+    font-style: italic;
+    opacity: 0.92;
+  }
+
+  .team-result {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    color: var(--text);
+  }
+
+  .team-score {
+    font-size: 0.9rem;
+    font-weight: 900;
+  }
+
+  .team-medal {
+    font-size: 0.9rem;
+    line-height: 1;
+  }
+
+ .current-wrap {
+  min-height: 0;
   flex: 1;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) 170px;
+  gap: 14px;
+}
+
+.games-grid {
+  min-height: 0;
+  display: grid;
+  gap: 12px;
+  grid-template-rows: var(--game-rows, 1fr 1fr);
+}
+
+.games-grid.one-card {
+  grid-template-rows: 1fr;
+}
+
+.game-card {
+  min-height: 0;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 18px;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  align-content: start;
+  gap: 12px;
+}
+
+.game-card.hidden { display: none; }
+
+.game-title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1.05;
+  color: var(--text);
+}
+
+.game-location {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--teal-soft);
+  border: 1px solid rgba(20,184,166,0.28);
+  color: #99f6e4;
+  font-size: 0.96rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.rules-card {
+  min-height: 0;
+  height: fit-content;
+  align-self: start;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 14px;
   display: flex;
   flex-direction: column;
-}
-
-.panel-title {
-  color: var(--teal);
-  font-size: 0.95rem;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
-.table-wrap { flex: 1; }
-
-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 4px;
-}
-
-td, th {
-  font-size: 0.85rem;
-  text-align: center;
-}
-
-.time-col { width: 100px; }
-.team-tim { background: var(--tim-bg); }
-.team-kevin { background: var(--kevin-bg); }
-.team-shivani { background: var(--shivani-bg); }
-.team-chris { background: var(--chris-bg); }
-
-/* CLOSING MODE */
-.closing-mode {
-  height: 100%;
-  border-radius: var(--radius);
   overflow: hidden;
 }
 
-.closing-mode.hidden { display: none; }
-
-.closing-frame {
-  width: 100%;
-  height: 100%;
-  border: none;
-  background: white;
+.rules-title {
+  font-size: 0.92rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 8px;
+  line-height: 1;
 }
+
+.rules-body {
+  white-space: pre-wrap;
+  color: var(--muted);
+  font-size: 0.98rem;
+  line-height: 1.35;
+  overflow: visible;
+}
+
+  .bottom-strip {
+    border-radius: 18px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 14px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 142px 142px;
+    gap: 12px;
+  }
+
+  .message-box {
+    border-radius: 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 8px 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    color: var(--text);        /* changed */
+    font-size: 0.88rem;        /* match table text */
+    font-weight: 900;          /* match revealed events */
+    line-height: 1.25;
+  }
+
+  .photo-square {
+    width: 142px;
+    height: 142px;
+    border-radius: 14px;
+    object-fit: contain;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.05);
+  }
 </style>
 </head>
-
 <body>
-
-<div class="dashboard">
-
-  <!-- TITLE ALWAYS VISIBLE -->
-  <div class="title-bar">🏆 3-0-lympics Dashboard 🏆</div>
-
-  <!-- NORMAL DASHBOARD -->
-  <div class="dashboard-content" id="dashboard-content">
-
-    <section class="panel">
+  <div class="dashboard" id="dashboard">
+    <section class="panel main-panel">
       <div class="panel-inner">
-        <div class="panel-title">Schedule + Scores</div>
+        <div class="dashboard-title">🏆 3-0-lympics Dashboard 🏆</div>
+        <h2 class="panel-title">Schedule + Scores</h2>
+        <div class="legend-note">Unrevealed events use CensorText in teal. Revealed events switch to bright white.</div>
         <div class="table-wrap">
-          <table>
+          <table aria-label="Schedule and team scores">
             <thead>
-              <tr>
+              <tr class="header-row">
                 <th class="time-col">Time</th>
-                <th>Event</th>
-                <th>Tim</th>
-                <th>Kevin</th>
-                <th>Shivani</th>
-                <th>Chris</th>
+                <th class="event-col">Event</th>
+                <th class="team-tim">Tim</th>
+                <th class="team-kevin">Kevin</th>
+                <th class="team-shivani">Shivani</th>
+                <th class="team-chris">Chris</th>
               </tr>
             </thead>
             <tbody id="sched-body"></tbody>
           </table>
-        </div>
-      </div>
-    </section>
-
-    <section class="panel">
-      <div class="panel-inner">
-        <div class="panel-title">Current Game</div>
-        <div id="game-title-1"></div>
-        <div id="game-rules-1"></div>
-      </div>
-    </section>
-
-  </div>
-
-  <!-- FULL SCREEN GRAPH -->
-  <div class="closing-mode hidden" id="closing-mode">
-    <iframe id="closing-frame" class="closing-frame"></iframe>
-  </div>
-
+          <div id="closing-mode" style="display:none; width:100%; height:100%;">
+  <iframe id="closing-frame"
+    style="width:100%; height:100%; border:none; background:white;">
+  </iframe>
 </div>
+        </div>
+        <div class="status-note" id="sched-status">Loading schedule…</div>
+      </div>
+    </section>
 
-<script>
-const CLOSING_GRAPH_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRQrpYFX76QhfuyNeiHgGz_8t7dY9UuSWnj7QjLNYfVp9Fvr2lN0jZEvg2FWORE0oTeluWMmdr0OylS/pubchart?oid=707721946&format=interactive";
+    <section class="panel current-panel">
+      <div class="panel-inner">
+        <h2 class="panel-title">Current Game</h2>
+        <div class="current-wrap">
+          <div class="games-grid one-card" id="games-grid">
+            <article class="game-card" id="game-card-1">
+              <div class="game-title" id="game-title-1">Loading…</div>
+              <div class="game-location" id="game-location-1">📍 —</div>
+              <div class="rules-card">
+                <div class="rules-title">Game Rules</div>
+                <div class="rules-body" id="game-rules-1"></div>
+              </div>
+            </article>
 
+            <article class="game-card hidden" id="game-card-2">
+              <div class="game-title" id="game-title-2"></div>
+              <div class="game-location" id="game-location-2"></div>
+              <div class="rules-card">
+                <div class="rules-title">Game Rules</div>
+                <div class="rules-body" id="game-rules-2"></div>
+              </div>
+            </article>
+          </div>
+
+          <div class="bottom-strip">
+            <div class="message-box" id="sponsor-message">Loading sponsor message…</div>
+            <img class="photo-square" id="sponsor-logo" alt="Sponsor logo" />
+            <img class="photo-square" id="sponsor-qr" alt="Sponsor QR" />
+          </div>
+        </div>
+        <div class="status-note error-note" id="current-status" style="display:none;"></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const REFRESH_MS = 30000;
+
+    const CSV_URLS = {
+      const CLOSING_GRAPH_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRQrpYFX76QhfuyNeiHgGz_8t7dY9UuSWnj7QjLNYfVp9Fvr2lN0jZEvg2FWORE0oTeluWMmdr0OylS/pubchart?oid=707721946&format=interactive";
+      sched: "https://docs.google.com/spreadsheets/d/1XRQaYtpF73oGmPD8fKEt81taq0dXysXRZt66Yma2Lzs/export?format=csv&gid=756658667",
+      current: "https://docs.google.com/spreadsheets/d/1XRQaYtpF73oGmPD8fKEt81taq0dXysXRZt66Yma2Lzs/export?format=csv&gid=1263608187",
+      config: "https://docs.google.com/spreadsheets/d/1XRQaYtpF73oGmPD8fKEt81taq0dXysXRZt66Yma2Lzs/export?format=csv&gid=1846876381"
+    };
+
+    function normalize(value) {
+      return String(value ?? "").trim();
+    }
+
+    function parseBool(value) {
+      const v = normalize(value).toLowerCase();
+      return v === "true" || v === "yes" || v === "1";
+    }
+
+    function safeHtml(text) {
+      return String(text ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function placeToEmoji(place) {
+      const p = normalize(place).toLowerCase();
+      if (["1", "1st", "gold", "🥇"].includes(p)) return "🥇";
+      if (["2", "2nd", "silver", "🥈"].includes(p)) return "🥈";
+      if (["3", "3rd", "bronze", "🥉"].includes(p)) return "🥉";
+      if (["4", "4th", "goofy", "funny", "🤪"].includes(p)) return "🤪";
+      return p || "—";
+    }
+
+    function parseCsv(text) {
+      const rows = [];
+      let row = [];
+      let field = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const next = text[i + 1];
+
+        if (inQuotes) {
+          if (char === '"' && next === '"') {
+            field += '"';
+            i++;
+          } else if (char === '"') {
+            inQuotes = false;
+          } else {
+            field += char;
+          }
+        } else {
+          if (char === '"') {
+            inQuotes = true;
+          } else if (char === ",") {
+            row.push(field);
+            field = "";
+          } else if (char === "\n") {
+            row.push(field);
+            rows.push(row);
+            row = [];
+            field = "";
+          } else if (char === "\r") {
+            // ignore
+          } else {
+            field += char;
+          }
+        }
+      }
+
+      row.push(field);
+      rows.push(row);
+
+      return rows.filter(r => !(r.length === 1 && normalize(r[0]) === ""));
+    }
+
+    function csvToObjects(csvText) {
+      const rows = parseCsv(csvText);
+      if (!rows.length) return [];
+      const headers = rows[0].map(h => normalize(h));
+      return rows.slice(1).map(r => {
+        const obj = {};
+        headers.forEach((header, idx) => {
+          obj[header] = r[idx] ?? "";
+        });
+        return obj;
+      });
+    }
+
+    async function fetchCsv(url) {
+      const bust = `${url}${url.includes("?") ? "&" : "?"}_ts=${Date.now()}`;
+      const res = await fetch(bust, { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.text();
+    }
+
+    function teamCell(score, place, className) {
+      return `
+        <td class="${className}">
+          <div class="team-result">
+            <span class="team-score">${safeHtml(normalize(score) || "0")}</span>
+            <span class="team-medal">${safeHtml(placeToEmoji(place))}</span>
+          </div>
+        </td>
+      `;
+    }
 function setClosingMode(isClosing) {
-  const dash = document.getElementById("dashboard-content");
+  const dashboard = document.getElementById("dashboard");
   const closing = document.getElementById("closing-mode");
   const frame = document.getElementById("closing-frame");
 
   if (isClosing) {
-    dash.style.display = "none";
-    closing.classList.remove("hidden");
-    if (!frame.src) frame.src = CLOSING_GRAPH_URL;
+    dashboard.style.display = "none";
+    closing.style.display = "block";
+
+    if (!frame.src) {
+      frame.src = CLOSING_GRAPH_URL;
+    }
+
   } else {
-    dash.style.display = "grid";
-    closing.classList.add("hidden");
+    dashboard.style.display = "grid";
+    closing.style.display = "none";
     frame.src = "";
   }
 }
+    function renderSchedule(rows) {
+      const body = document.getElementById("sched-body");
+      const status = document.getElementById("sched-status");
 
-async function checkGameState() {
-  try {
-    const res = await fetch("https://docs.google.com/spreadsheets/d/1XRQaYtpF73oGmPD8fKEt81taq0dXysXRZt66Yma2Lzs/export?format=csv&gid=1263608187");
-    const text = await res.text();
+      const cleaned = rows
+        .filter(r => normalize(r["Time"]) || normalize(r["Event"]) || normalize(r["RevealText"]) || normalize(r["CensorText"]))
+        .map(r => ({
+          time: normalize(r["Time"]),
+          visible: parseBool(r["Visible"]),
+          censorText: normalize(r["CensorText"]) || normalize(r["Event"]),
+          revealText: normalize(r["RevealText"]) || normalize(r["Event"]),
+          timScore: normalize(r["Tim Score"]) || "0",
+          timPlace: normalize(r["Tim Place"]) || "4",
+          kevinScore: normalize(r["Kevin Score"]) || "0",
+          kevinPlace: normalize(r["Kevin Place"]) || "4",
+          shivaniScore: normalize(r["Shivani Score"]) || "0",
+          shivaniPlace: normalize(r["Shivani Place"]) || "4",
+          chrisScore: normalize(r["Chris Score"]) || "0",
+          chrisPlace: normalize(r["Chris Place"]) || "4"
+        }));
 
-    const rows = text.split("\n").map(r => r.split(","));
+     const currentIndex = cleaned.reduce((lastTrueIndex, row, index) => {
+        return row.visible ? index : lastTrueIndex;
+        }, -1);
 
-    // Find the row where Event exists (skip header)
-    const event = rows[1]?.[0]?.trim().toLowerCase();
+      body.innerHTML = cleaned.map((r, idx) => {
+        const shownEvent = r.visible ? r.revealText : r.censorText;
+        const eventClass = r.visible ? "event-col revealed" : "event-col hidden";
+        const rowClass = idx === currentIndex ? "current-row" : "";
+        return `
+          <tr class="${rowClass}">
+            <td class="time-col">${safeHtml(r.time)}</td>
+            <td class="${eventClass}">${safeHtml(shownEvent)}</td>
+            ${teamCell(r.timScore, r.timPlace, "team-tim")}
+            ${teamCell(r.kevinScore, r.kevinPlace, "team-kevin")}
+            ${teamCell(r.shivaniScore, r.shivaniPlace, "team-shivani")}
+            ${teamCell(r.chrisScore, r.chrisPlace, "team-chris")}
+          </tr>
+        `;
+      }).join("");
 
-    const isClosing = event === "closing ceremony";
+      status.textContent = `Loaded ${cleaned.length} schedule row${cleaned.length === 1 ? "" : "s"}. Refreshes every ${REFRESH_MS / 1000}s.`;
+    }
 
-    setClosingMode(isClosing);
+    function estimateGameWeight(game) {
+      const titleLen = normalize(game.event).length;
+      const locationLen = normalize(game.location).length;
+      const rulesLen = normalize(game.rules).length;
 
-  } catch (err) {
-    console.error("Error checking game state:", err);
-  }
-}
+      // Heavily weight rules length, lightly weight title/location.
+      const raw = 1 + (rulesLen / 180) + (titleLen / 90) + (locationLen / 120);
+      return Math.max(1, Math.min(raw, 3.2));
+    }
 
-// run once + refresh every 10s
-checkGameState();
-setInterval(checkGameState, 10000);
-</script>
+    function renderCurrentGames(rows) {
+      const usable = rows
+        .filter(r => normalize(r["Event"]))
+        .slice(0, 2);
 
+      const normalized = usable
+        .map(r => ({
+          event: normalize(r["Event"]),
+          location: normalize(r["Location"]),
+          rules: normalize(r["Rules"])
+        }))
+        .filter(r => r.event && r.event.toLowerCase() !== "blank");
+const isClosingCeremony = normalized.some(
+  g => g.event.toLowerCase() === "closing ceremony"
+);
+
+setClosingMode(isClosingCeremony);
+
+if (isClosingCeremony) return;
+      const grid = document.getElementById("games-grid");
+      grid.classList.toggle("one-card", normalized.length <= 1);
+
+      if (normalized.length === 2) {
+        const w1 = estimateGameWeight(normalized[0]);
+        const w2 = estimateGameWeight(normalized[1]);
+        grid.style.setProperty("--game-rows", `${w1}fr ${w2}fr`);
+      } else {
+        grid.style.setProperty("--game-rows", "1fr");
+      }
+
+      for (let i = 1; i <= 2; i++) {
+        const card = document.getElementById(`game-card-${i}`);
+        const data = normalized[i - 1];
+        if (!data) {
+          card.classList.add("hidden");
+          continue;
+        }
+        card.classList.remove("hidden");
+        document.getElementById(`game-title-${i}`).textContent = data.event;
+        const locEl = document.getElementById(`game-location-${i}`);
+        if (data.location) {
+          locEl.textContent = `📍 ${data.location}`;
+          locEl.style.display = "inline-flex";
+        } else {
+          locEl.textContent = "";
+          locEl.style.display = "none";
+        }
+        document.getElementById(`game-rules-${i}`).textContent = data.rules || "";
+      }
+
+      if (normalized.length === 0) {
+        const card = document.getElementById("game-card-1");
+        card.classList.remove("hidden");
+        document.getElementById("game-title-1").textContent = "";
+        document.getElementById("game-location-1").style.display = "none";
+        document.getElementById("game-rules-1").textContent = "";
+        grid.style.setProperty("--game-rows", "1fr");
+      }
+    }
+
+    function renderConfig(rows) {
+      const map = {};
+      rows.forEach(r => {
+        const field = normalize(r["Field"]);
+        if (field) map[field] = normalize(r["Value"]);
+      });
+
+      document.getElementById("sponsor-message").textContent = map["SponsorMessage"] || "";
+
+      const logo = document.getElementById("sponsor-logo");
+      if (map["SponsorLogo"]) {
+        logo.src = map["SponsorLogo"];
+        logo.style.display = "block";
+      } else {
+        logo.removeAttribute("src");
+        logo.style.display = "none";
+      }
+
+      const qr = document.getElementById("sponsor-qr");
+      if (map["SponsorQR"]) {
+        qr.src = map["SponsorQR"];
+        qr.style.display = "block";
+      } else {
+        qr.removeAttribute("src");
+        qr.style.display = "none";
+      }
+    }
+
+    async function loadAll() {
+      const schedStatus = document.getElementById("sched-status");
+      const currentStatus = document.getElementById("current-status");
+      currentStatus.style.display = "none";
+      currentStatus.textContent = "";
+
+      try {
+        const [schedText, currentText, configText] = await Promise.all([
+          fetchCsv(CSV_URLS.sched),
+          fetchCsv(CSV_URLS.current),
+          fetchCsv(CSV_URLS.config)
+        ]);
+
+        const schedRows = csvToObjects(schedText);
+        const currentRows = csvToObjects(currentText);
+        const configRows = csvToObjects(configText);
+
+        renderSchedule(schedRows);
+        renderCurrentGames(currentRows);
+        renderConfig(configRows);
+      } catch (err) {
+        console.error(err);
+        schedStatus.textContent = "Could not load sheet data.";
+        currentStatus.textContent = "Data load failed. Check that the CSV export links are public and that GitHub Pages is serving the file over HTTPS.";
+        currentStatus.style.display = "block";
+      }
+    }
+
+    loadAll();
+    setInterval(loadAll, REFRESH_MS);
+  </script>
 </body>
 </html>
