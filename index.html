@@ -342,7 +342,7 @@
 </style>
 </head>
 <body>
-  <div class="dashboard" id="dashboard">
+  <div class="dashboard">
     <section class="panel main-panel">
       <div class="panel-inner">
         <div class="dashboard-title">🏆 3-0-lympics Dashboard 🏆</div>
@@ -362,11 +362,6 @@
             </thead>
             <tbody id="sched-body"></tbody>
           </table>
-          <div id="closing-mode" style="display:none; width:100%; height:100%;">
-  <iframe id="closing-frame"
-    style="width:100%; height:100%; border:none; background:white;">
-  </iframe>
-</div>
         </div>
         <div class="status-note" id="sched-status">Loading schedule…</div>
       </div>
@@ -411,7 +406,6 @@
     const REFRESH_MS = 30000;
 
     const CSV_URLS = {
-      const CLOSING_GRAPH_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRQrpYFX76QhfuyNeiHgGz_8t7dY9UuSWnj7QjLNYfVp9Fvr2lN0jZEvg2FWORE0oTeluWMmdr0OylS/pubchart?oid=707721946&format=interactive";
       sched: "https://docs.google.com/spreadsheets/d/1XRQaYtpF73oGmPD8fKEt81taq0dXysXRZt66Yma2Lzs/export?format=csv&gid=756658667",
       current: "https://docs.google.com/spreadsheets/d/1XRQaYtpF73oGmPD8fKEt81taq0dXysXRZt66Yma2Lzs/export?format=csv&gid=1263608187",
       config: "https://docs.google.com/spreadsheets/d/1XRQaYtpF73oGmPD8fKEt81taq0dXysXRZt66Yma2Lzs/export?format=csv&gid=1846876381"
@@ -518,25 +512,7 @@
         </td>
       `;
     }
-function setClosingMode(isClosing) {
-  const dashboard = document.getElementById("dashboard");
-  const closing = document.getElementById("closing-mode");
-  const frame = document.getElementById("closing-frame");
 
-  if (isClosing) {
-    dashboard.style.display = "none";
-    closing.style.display = "block";
-
-    if (!frame.src) {
-      frame.src = CLOSING_GRAPH_URL;
-    }
-
-  } else {
-    dashboard.style.display = "grid";
-    closing.style.display = "none";
-    frame.src = "";
-  }
-}
     function renderSchedule(rows) {
       const body = document.getElementById("sched-body");
       const status = document.getElementById("sched-status");
@@ -603,13 +579,7 @@ function setClosingMode(isClosing) {
           rules: normalize(r["Rules"])
         }))
         .filter(r => r.event && r.event.toLowerCase() !== "blank");
-const isClosingCeremony = normalized.some(
-  g => g.event.toLowerCase() === "closing ceremony"
-);
 
-setClosingMode(isClosingCeremony);
-
-if (isClosingCeremony) return;
       const grid = document.getElementById("games-grid");
       grid.classList.toggle("one-card", normalized.length <= 1);
 
