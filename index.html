@@ -189,14 +189,28 @@ function setClosingMode(isClosing) {
   }
 }
 
-/* MOCK: replace with your real logic */
-function checkGameState(currentGame) {
-  const isClosing = currentGame.toLowerCase() === "closing ceremony";
-  setClosingMode(isClosing);
+async function checkGameState() {
+  try {
+    const res = await fetch("https://docs.google.com/spreadsheets/d/1XRQaYtpF73oGmPD8fKEt81taq0dXysXRZt66Yma2Lzs/export?format=csv&gid=1263608187");
+    const text = await res.text();
+
+    const rows = text.split("\n").map(r => r.split(","));
+
+    // Find the row where Event exists (skip header)
+    const event = rows[1]?.[0]?.trim().toLowerCase();
+
+    const isClosing = event === "closing ceremony";
+
+    setClosingMode(isClosing);
+
+  } catch (err) {
+    console.error("Error checking game state:", err);
+  }
 }
 
-/* EXAMPLE */
-checkGameState("Closing Ceremony");
+// run once + refresh every 10s
+checkGameState();
+setInterval(checkGameState, 10000);
 </script>
 
 </body>
